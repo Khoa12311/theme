@@ -284,7 +284,7 @@ function updateWallpaperPreview(){
   let now = new Date();
   let txt = getClockText(now,format);
   wallCtx.save();
-  wallCtx.font = `600 ${fontsize}px `+fonts.find(f=>f.name===font)?.css||'sans-serif';
+  wallCtx.font = `600 ${fontsize}px ` + (fonts.find(f=>f.name===font)?.css || 'sans-serif');
   wallCtx.textBaseline='middle';
   wallCtx.textAlign='center';
   wallCtx.fillStyle = color;
@@ -389,7 +389,7 @@ wallExportBtn.onclick=async()=>{
     let now = new Date();
     let txt = getClockText(now,format);
     ctx.save();
-    ctx.font = `600 ${fontsize*(w/360)}px `+fonts.find(f=>f.name===font)?.css||'sans-serif';
+    ctx.font = `600 ${fontsize*(w/360)}px ` + (fonts.find(f=>f.name===font)?.css || 'sans-serif');
     ctx.textBaseline='middle';
     ctx.textAlign='center';
     ctx.fillStyle = color;
@@ -435,7 +435,4 @@ function createSakuraPetal() {
   setTimeout(()=>petal.remove(), 9000);
 }
 setInterval(() => { if(Math.random()<.45) createSakuraPetal(); }, 1400);
-// rest of your JS as before...
-// Place this at the top. The rest of the JS is unchanged, just be sure the cosmetic JS sakura effect runs first.
-
-// ... (The rest of the original script.js – unchanged) ...
+// ChibiTheme Studio - end of script
