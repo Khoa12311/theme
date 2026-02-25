@@ -1,0 +1,396 @@
+/* --- Reset & Globals --- */
+* { box-sizing: border-box; }
+body {
+  background: radial-gradient(circle at 40% 30%, #212534 70%, #181a22 100%);
+  min-height: 100vh;
+  color: #e9eaf7;
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background 0.7s cubic-bezier(.86,.02,.46,.98);
+  overflow-x: hidden;
+}
+
+/* Anime color overlays, sakura effect (subtle petal) */
+body::before {
+  content: "";
+  position: fixed;
+  left:0;top:0;
+  right:0;bottom:0;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(110deg,#ffb9d0 5%,#25235500 40%,#ffe5ef30 55%,#22f7ff15 85%);
+  opacity: .14;
+}
+
+/* --- Glassmorphism & Main UI --- */
+.glass {
+  background: rgba(34, 39, 57, 0.86);
+  border-radius: 1.6em;
+  box-shadow: 0 14px 36px 0 rgba(34,39,57,.22), 0 2.2px 16px 0 rgba(60,65,90,.16);
+  backdrop-filter: blur(20px) saturate(190%);
+  border: 2.2px solid #fbb1e537;
+  animation: animeFade 1.6s cubic-bezier(.27,1.3,.48,.81) both;
+}
+
+/* --- Branding --- */
+.branding {
+  width: fit-content;
+  margin: 46px auto 11px auto;
+  padding: 14px 42px 14px 22px;
+  display: flex; align-items: center;
+  gap: 23px;
+  background: linear-gradient(105deg,#feebf7cc 0%,#232436cc 90%);
+  border-radius: 1em 1.9em 1.2em 0.9em;
+  box-shadow: 0 3px 18px 0 #ffc0f66b;
+  animation: animePopIn 1.1s cubic-bezier(.27,1.3,.48,.81) both;
+  border: 2.5px solid #fdabd3a5;
+}
+.branding-logo {
+  width: 55px; height: 55px; border-radius: 15px;
+  filter: drop-shadow(0 0 16px #fdcdf3b4) saturate(1.8) brightness(4.6) opacity(.85);
+}
+.tagline {
+  margin: 3px 0 0 4px;
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  font-size: 1.13rem;
+  color: #ec62b2;
+  opacity: 0.92;
+  text-shadow: 0 2px 13px #fdcdf3a2;
+}
+
+/* --- Tab Navigation --- */
+.tab-nav {
+  display: flex; gap: 13px; margin-bottom: 29px; padding-bottom: 16px;
+  border-bottom: 2.1px solid #efb3de41;
+}
+.tab-link {
+  background: none; outline: none; border: 0;
+  padding: 11px 29px;
+  font: 700 1.13em 'Poppins',sans-serif;
+  color: #fd8ddc; cursor: pointer;
+  border-radius: 1em 1em 0 0;
+  user-select: none;
+  transition: color .21s, background .23s, box-shadow .18s;
+  position: relative;
+}
+.tab-link.active, .tab-link:hover {
+  background: linear-gradient(90deg,#ffb0db 60%,#24364a 140%);
+  color: #fff7fb;
+  box-shadow: 0 18px 54px #f97ad816;
+  letter-spacing: .01em;
+  animation: animeSlideIn .4s cubic-bezier(.67,1.6,.21,.98) 1;
+}
+.tab-link:after {
+  content: "";
+  display: block; position: absolute; left:14px; right:14px; bottom:3px;
+  height: 3.6px; background: linear-gradient(90deg,#ff9fda 20%,#fe93fe 80%);
+  opacity: 0; border-radius: 6px; transition: opacity .21s;
+}
+.tab-link.active:after { opacity: 1; }
+.tab-content { display: none; animation: animeFade .8s .05s both;}
+.tab-content.active { display: block; }
+
+/* --- Module Headers --- */
+.module-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.module-header h2 { font-size: 1.33em; margin: 0 0 12px 0;}
+.icon-count, .resolution-count {
+  font-size: 1em;
+  font-family: "Roboto";
+  color: #fa81c6;
+  background: #fde6f7b7;
+  border-radius: .85em;
+  padding: 4px 25px 4px 14px;
+  font-weight: 400;
+  letter-spacing: .04em;
+  animation: animePulse 2.4s infinite linear;
+}
+@media (max-width:600px) {
+  .module-header h2 { font-size: 1.14em;}
+  .icon-count, .resolution-count { padding: 4px 14px 4px 9px; font-size: .92em;}
+}
+
+/* --- Uploads & Drag n Drop --- */
+.upload-area {
+  border: 3px dashed #fabeedbb;
+  background: linear-gradient(113deg,#fdf0ff 55%,#e2e6e7 100%,#fff1fa 130%);
+  border-radius: 1.1em;
+  text-align: center;
+  margin: 31px 0 38px 0;
+  padding: 49px 17px 34px;
+  position: relative;
+  cursor: pointer;
+  transition: border-color .24s, background .25s, box-shadow .19s;
+  color: #f97ed8;
+  font-size: 1.17em;
+  z-index: 1;
+  overflow: hidden;
+  box-shadow: 0 4px 22px #fd95ed12;
+  animation: animeFadeUp .7s .16s both;
+}
+.upload-area.dropping {
+  border-color: #fa9fed;
+  background: linear-gradient(100deg,#ffe4f9 80%,#ffeef5 180%);
+  color: #f14292;
+  box-shadow: 0 0px 58px 8px #ec62b244;
+}
+.upload-prompt .inline-btn {
+  color: #fa97e7;
+  background: none;
+  border: none;
+  text-decoration:underline;
+  cursor:pointer;
+  font: inherit;
+  margin-left:1px;
+  transition: color .21s;
+}
+.upload-prompt .inline-btn:hover { color: #6dc3fe; }
+
+/* --- Icon Preview Grid --- */
+.icon-grid {
+  display: grid;
+  gap: 34px 30px;
+  grid-template-columns: repeat(auto-fit,minmax(92px,1fr));
+  background: none;
+  margin: 17px 0 26px 0;
+  border-radius: 1.2em;
+  min-height: 90px;
+  transition: background .17s;
+  padding: 9px 0 15px 0;
+}
+.icon-preview {
+  background: linear-gradient(143deg,#fde0e6 57%,#fff6fa 120%);
+  border-radius: 1em;
+  box-shadow: 0 4px 22px #ffa1ef33;
+  display: flex; flex-direction: column; align-items: center; padding: 10px;
+  transition: box-shadow .22s, background .21s, transform .19s;
+  position: relative;
+  animation: animeBounceIn .55s both;
+  overflow: visible;
+}
+.icon-img {
+  width: 74px; height:74px; border-radius: .62em;
+  background: #f9cee2;
+  object-fit: contain;
+  box-shadow: 0 2.5px 20px #fdcdf355;
+  display:block;
+  margin-bottom: 6px;
+  transition: box-shadow .22s, filter .22s, transform .16s;
+}
+.icon-preview:hover .icon-img { box-shadow:0 0px 36px 0 #ee62ecb0; filter:saturate(1.05) brightness(1.18); transform:scale(1.08);}
+.icon-rename { font-size:1.02em; padding:5px 9px 2.5px 7px; border-radius:.62em;
+  border:0; outline:0; text-align:center; background:#fff3f7e8; color:#f15499; width:90%;
+  transition: background .21s, color .21s; margin-bottom:3.3px;
+  font-family:'Fira Code',monospace;
+}
+.icon-rename:focus { background:#fdcdf3; color:#2bd1ff; }
+.icon-preview .icon-del {
+  position: absolute; right: 8px; top: 8px; background:rgba(255,82,174,.13);
+  border: none; border-radius: 50%;
+  width: 27px; height:27px; color: #ef6299; font-size: 1.19em; cursor: pointer;
+  transition: background .21s,color .21s;
+  display: flex; align-items: center; justify-content: center; z-index: 9;
+}
+.icon-preview .icon-del:hover { background:rgba(250,104,182,.15); color:#fa97e7; scale:1.12;}
+.icon-manifest-row { margin: 2.1em 0 2.8em 0; font-size: 1em; }
+.icon-manifest-row label { cursor:pointer; user-select:none;}
+
+/* --- Buttons & Microinteractions --- */
+.glass-btn {
+  background: linear-gradient(90deg,#fd85eddb 20%,#fa6fe2 85%);
+  color: #10213e;
+  border-radius: 1.3em;
+  font: 600 1.20em 'Poppins',sans-serif;
+  border: none; outline: none; padding: 15px 60px 15px 34px; margin: 2em auto 0 auto; min-width: 210px;
+  box-shadow: 0 6px 24px 2px #fa97e730;
+  cursor: pointer; display: flex; align-items: center; gap: 19px; position: relative;
+  transition: background .21s, color .22s, box-shadow .28s, scale .14s;
+  scale:1;
+  animation: animePulseBtn 2.8s infinite alternate cubic-bezier(.45,1.8,.42,.85);
+}
+.glass-btn[disabled], .glass-btn:disabled {
+  filter: grayscale(0.4) opacity(0.53);
+  pointer-events: none;
+}
+.glass-btn:hover {
+  background: linear-gradient(90deg,#fa97e7 10%,#6dc3fe 106%);
+  color: #3f14a1;
+  letter-spacing: .015em;
+  scale:1.08;
+  box-shadow: 0 10px 52px #f97ed916;
+}
+.glass-btn:active {
+  box-shadow: 0 1.5px 7px #fa97e730;
+  background: #e7629d;
+  scale:1.02;
+}
+
+.progress {
+  width: 22px; height: 22px;
+  margin-left: -10px;
+  display: inline-block; vertical-align: middle;
+  opacity: 0; pointer-events: none;
+  transition: opacity .23s;
+  background: none;
+}
+.glass-btn.loading .progress,
+#wallpaper-export-btn.loading .progress,
+#icon-export-btn.loading .progress {
+  opacity: 1;
+}
+.progress:after {
+  content: "";
+  display: block;
+  width:22px; height:22px;
+  border: 3px solid #fa97e77a;
+  border-top: 3px solid #6dc3fe;
+  border-radius: 50%;
+  animation: spinAnime 1.17s linear infinite;
+}
+@keyframes spinAnime { to { transform: rotate(360deg); } }
+@keyframes animeFade { from{opacity:0;}to{opacity:1;}}
+@keyframes animeFadeUp {from{opacity:0;transform:translateY(27px);}to{opacity:1;transform:translateY(0);}}
+@keyframes animePopIn { from{opacity:0;transform:scale(.86) rotateX(-10deg);} to{opacity:1;transform:scale(1) rotateX(0);} }
+@keyframes animeSlideIn { from{opacity:.3;transform:translateY(18px) scale(.92);} to{opacity:1;transform:translateY(0) scale(1);} }
+@keyframes animeBounceIn {
+  0%{ opacity:0; transform:scale(.7) translateY(-50px); }
+  45%{ opacity:.97; transform:scale(1.15) translateY(30px);}
+  65%{ opacity:1; transform:scale(.96) translateY(-11px);}
+  85%{ opacity:1; transform:scale(1.04) translateY(2px);}
+  100%{ opacity: 1; transform:scale(1) translateY(0);}
+}
+@keyframes animePulseBtn {
+  0%{ box-shadow: 0 4px 12px #fd95ed12; }
+  55%{ box-shadow: 0 14px 38px #fa97e730;}
+  100%{ box-shadow: 0 6px 24px 2px #fa97e736;}
+}
+@keyframes animePulse {
+  0%{ background:#fde6f7b7; color:#fa81c6;}
+  50%{ background:#fdcdf3b7; color:#f15499;}
+  100%{ background:#fde6f7b7; color:#fa81c6;}
+}
+
+/* --- Wallpaper Module --- */
+.wallpaper-controls {
+  display: flex; flex-wrap: wrap; gap: 33px 21px; margin: 22px 0 37px 0;
+  align-items: flex-start; justify-content: space-between;
+  animation: animeFadeUp .67s .11s both;
+}
+.wallpaper-settings {
+  display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-end;
+}
+.wallpaper-settings fieldset { border:0; margin:0 13px 0 0; padding:0;}
+.wallpaper-settings legend { color: #fd8ddc; font-size: 1em; }
+/* Controls for effects & export */
+.wallpaper-effects {
+  display: flex; flex-direction: column; align-items: flex-start; gap:14px;
+  margin-bottom:10px;
+}
+.wallpaper-effects label, .wallpaper-export label { font-size:1em; color:#fd8ddc;}
+.wallpaper-export label { margin-right:15px;}
+.wallpaper-export input[type="checkbox"] { margin-left: 2.5px;}
+.wallpaper-controls input[type="range"] { width:76px; vertical-align:middle; margin-right:7px;}
+.wallpaper-preview-controls {
+  display:flex; flex-direction: row; justify-content: center; margin-top: 16px; gap:10px;}
+#wallpaper-preview-wrap {
+  text-align:center; margin: 0 auto; max-width: 440px; background:transparent;
+}
+#wallpaper-canvas {
+  display:block; margin: 0 auto; background: #ffebef;
+  border-radius:2em; width: 390px; height: 780px; max-width:97vw;
+  transition: box-shadow .33s, transform .17s;
+  box-shadow:0 8px 82px #fdc4e455;
+  animation: animeFade 1.3s .21s both;
+}
+
+/* Float sakura petals (anime style) */
+.sakura-petal {
+  position:fixed;z-index:100;pointer-events:none;
+  width: 26px; height: auto; opacity: .22;
+  filter: blur(.5px) drop-shadow(0 4px 24px #fdcdf399);
+  animation: sakuraFall var(--spd,7s) linear forwards;
+}
+
+@keyframes sakuraFall {
+  0% { transform: translateY(-200px) rotateZ(0deg) scale(.92); opacity:.21; }
+  17% { transform: translateY(60px) rotateZ(12deg) scale(.97); opacity:.25;}
+  39% { transform: translateY(180px) rotateZ(34deg) scale(1.13); opacity:.26;}
+  73% { transform: translateY(410px) rotateZ(66deg) scale(1.26); opacity:.21;}
+  89% { transform: translateY(610px) rotateZ(120deg) scale(.99); opacity:.15;}
+  100% { transform: translateY(900px) rotateZ(190deg) scale(.8); opacity:.07;}
+}
+
+@media (max-width:600px) { #wallpaper-canvas { width:96vw;height:auto;} }
+
+/* --- Wallpaper Customizer --- */
+.wallpaper-res-custom[type="text"] {
+  background:#fde6f7;
+  border: 0; border-radius:.6em;
+  color:#f15499; width: 43px;
+  padding: 3px 8px; font-size:1em;
+  font-family:'Fira Code',monospace;
+}
+#wallpaper-darkness-val { font-size:.93em;color:#fd9bd6; margin-left:9px;}
+
+::-webkit-input-placeholder {color:#fdcdf399;}
+:-ms-input-placeholder {color: #fdcdf399;}
+::placeholder {color: #fdcdf399;}
+
+/* --- Notifications --- */
+#notifier {
+  position: fixed;
+  left:50%; transform:translateX(-50%);
+  top:22px;
+  z-index: 9999;
+  pointer-events: none;
+}
+.notif {
+  background: linear-gradient(90deg,#da97fecc 10%,#ffd2fccc 130%);
+  color: #362059; border-radius: 1.6em;
+  font: 700 1em 'Inter',sans-serif;
+  padding: 14px 51px; margin: 10px 0; opacity:0;
+  box-shadow:0 2px 18px #fdcdf336;
+  animation: notifAnimeIn .9s cubic-bezier(.27,1.3,.48,.81) both;
+  pointer-events: auto;
+}
+@keyframes notifAnimeIn { from{opacity: 0; transform: translateY(-16px) scale(.97);} to{opacity: .98; transform: translateY(0) scale(1);}}
+.notif.success { background: linear-gradient(90deg,#fdcdf3 7%,#ffc2eb 100%); color:#17482e;}
+
+/* --- Loader --- */
+.loading-overlay {
+  position:fixed;inset:0;z-index: 12000;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:21px;
+  background:rgba(253,179,212,.16);
+  backdrop-filter: blur(11px) saturate(250%);
+  transition: opacity .35s;
+  opacity: 1; pointer-events: all;
+}
+.loading-overlay.hidden { opacity:0;pointer-events:none;}
+.loader {
+  width:53px;height:53px; border-radius:50%;
+  border:8px solid #fdcdf336;
+  border-top:8px solid #ffb9d0;
+  animation: spinAnime 1.27s linear infinite;
+  margin-bottom:11px;
+}
+#loading-msg {
+  color: #fdcdf3; font-family: 'Poppins'; font-size:1.18em;
+  letter-spacing:.07em;
+  text-shadow: 0 3px 14px #fdcdf3b4;
+}
+
+/* --- Anime Floating Sakura Petals JS Helper --- */
+.sakura-petal {
+  pointer-events:none;
+}
+
+/* Hide elements by default */
+.hidden, [hidden] { display: none !important; }
+
+::-webkit-scrollbar { width: 8px; background:#fde6f7b7;}
+::-webkit-scrollbar-thumb { background: #fdcdf336; border-radius: 15px; }

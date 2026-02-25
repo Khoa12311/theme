@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ChibiTheme Studio – Design your Android style in seconds</title>
+  <meta name="theme-color" content="#111111">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="offline-indicator" class="glass offline-indicator hidden">Offline</div>
+  <div id="branding" class="branding glass">
+    <img src="icons/icon-192.png" class="branding-logo" alt="Logo" loading="lazy"/>
+    <div>
+      <h1>ChibiTheme Studio</h1>
+      <p class="tagline">Design your Android style in seconds</p>
+    </div>
+  </div>
+  <div id="main-ui" class="glass">
+    <nav class="tab-nav">
+      <button class="tab-link active" data-tab="iconpack">Icon Pack Generator</button>
+      <button class="tab-link" data-tab="wallpaper">Wallpaper + Clock</button>
+    </nav>
+    <div class="tab-content active" id="tab-iconpack">
+      <section class="module-header">
+        <h2>Icon Pack Generator</h2>
+        <span id="icon-count" class="icon-count">0 icons</span>
+      </section>
+      <div id="icon-upload-area" class="upload-area drop-area">
+        <input type="file" id="icon-multi-upload" accept="image/*" multiple hidden>
+        <span class="upload-prompt">Drag & Drop or <button type="button" class="inline-btn" id="icon-upload-btn">Browse</button> to upload icons</span>
+      </div>
+      <div id="icon-preview-grid" class="icon-grid"></div>
+      <div class="icon-manifest-row">
+        <label><input type="checkbox" id="include-manifest"> Include manifest.json</label>
+      </div>
+      <button id="icon-export-btn" class="glass-btn" disabled>
+        <span>Export Icon Pack ZIP</span>
+        <div id="icon-progress" class="progress"></div>
+      </button>
+    </div>
+    <div class="tab-content" id="tab-wallpaper">
+      <section class="module-header">
+        <h2>Wallpaper + Custom Clock</h2>
+        <span class="resolution-count" id="wallpaper-res-count"></span>
+      </section>
+      <div id="wallpaper-upload-area" class="upload-area drop-area">
+        <input type="file" id="wallpaper-upload" accept="image/*" hidden>
+        <span class="upload-prompt">Drag & Drop or <button type="button" class="inline-btn" id="wallpaper-upload-btn">Browse</button> to upload background</span>
+      </div>
+      <div id="wallpaper-controls" class="wallpaper-controls">
+        <div class="wallpaper-settings">
+          <fieldset>
+            <legend>Clock Format</legend>
+            <select id="clock-format">
+              <option value="24-hm">HH:mm</option>
+              <option value="24-hms">HH:mm:ss</option>
+              <option value="12-hm">hh:mm AM/PM</option>
+              <option value="12-hms">hh:mm:ss AM/PM</option>
+            </select>
+          </fieldset>
+          <fieldset>
+            <legend>Font</legend>
+            <select id="clock-font">
+              <option value="Poppins">Poppins</option>
+              <option value="Roboto">Roboto</option>
+              <option value="Fira Code">Fira Code</option>
+              <option value="Inter">Inter</option>
+              <option value="monospace">Monospace</option>
+            </select>
+            <label>Size <input type="range" id="clock-fontsize" min="24" max="120" value="48"></label>
+          </fieldset>
+          <fieldset>
+            <legend>Color & Effects</legend>
+            <label>Text Color <input type="color" id="clock-color" value="#ffffff"></label>
+            <label><input type="checkbox" id="clock-shadow"> Text Shadow</label>
+          </fieldset>
+          <fieldset>
+            <legend>Position</legend>
+            <select id="clock-pos">
+              <option value="center">Center</option>
+              <option value="top">Top</option>
+              <option value="bottom">Bottom</option>
+            </select>
+          </fieldset>
+        </div>
+        <div class="wallpaper-effects">
+          <label><input type="checkbox" id="wallpaper-blur"> Blur BG</label>
+          <label>
+            <span>Dark Overlay</span>
+            <input type="range" id="wallpaper-darkness" min="0" max="80" value="40">
+            <span id="wallpaper-darkness-val">40%</span>
+          </label>
+        </div>
+        <div class="wallpaper-export">
+          <fieldset>
+            <legend>Wallpaper Sizes</legend>
+            <label><input type="checkbox" class="wallpaper-res-chk" value="1080x1920" checked>1080x1920</label>
+            <label><input type="checkbox" class="wallpaper-res-chk" value="1440x2560">1440x2560</label>
+            <label>Custom:
+              <input type="text" class="wallpaper-res-custom" id="res-custom-width" placeholder="W" size="3">
+              x
+              <input type="text" class="wallpaper-res-custom" id="res-custom-height" placeholder="H" size="3">
+              <input type="checkbox" id="custom-res-chk">
+            </label>
+          </fieldset>
+        </div>
+      </div>
+      <div id="wallpaper-preview-wrap">
+        <canvas id="wallpaper-canvas" width="360" height="720"></canvas>
+        <div class="wallpaper-preview-controls">
+          <button id="wallpaper-export-btn" class="glass-btn" disabled>
+            <span>Export Wallpaper</span>
+            <div id="wallpaper-progress" class="progress"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="pwa-install-bar" class="glass hidden">
+    <button id="install-btn" class="glass-btn"><span>Install App</span></button>
+  </div>
+  <div id="loading-overlay" class="glass loading-overlay hidden">
+    <div class="loader"></div>
+    <span id="loading-msg">Processing...</span>
+  </div>
+  <div id="notifier"></div>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Roboto:wght@400;700&family=Fira+Code:wght@400;600&family=Inter:wght@500&display=swap" rel="stylesheet">
+  <script src="jszip.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // PWA: service worker registration & install prompt
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./service-worker.js');
+      });
+    }
+    // PWA install
+    let deferredPrompt = null;
+    const installBar = document.getElementById('pwa-install-bar');
+    const installBtn = document.getElementById('install-btn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt=e;
+      installBar.classList.remove('hidden');
+    });
+    installBtn?.addEventListener('click', async () => {
+      installBar.classList.add('installing');
+      installBtn.disabled = true;
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if(outcome==='accepted') {
+          installBar.classList.add('hidden');
+        } else {
+          installBtn.disabled = false;
+        }
+        deferredPrompt = null;
+      }
+      setTimeout(()=>installBar.classList.remove('installing'), 1100);
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBar.classList.add('hidden');
+      setTimeout(()=>installBar.remove(), 800);
+    });
+
+    // Offline indicator
+    function updateOfflineStatus() {
+      const el = document.getElementById('offline-indicator');
+      if(navigator.onLine){
+        el.classList.add('hidden');
+      }else{
+        el.classList.remove('hidden');
+      }
+    }
+    window.addEventListener('online', updateOfflineStatus);
+    window.addEventListener('offline', updateOfflineStatus);
+    updateOfflineStatus();
+  </script>
+</body>
+</html>
